@@ -48,10 +48,6 @@ class NoteAddEditActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
         getSupportActionBar()?.setDisplayShowHomeEnabled(true)
-        binding.toolbar.setNavigationOnClickListener {
-            setResult(RESULT_CANCELED)
-            finish()
-        }
 
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
 
@@ -116,5 +112,10 @@ class NoteAddEditActivity : AppCompatActivity() {
         val title = mEdtTitle.text.toString()
         val desc = mEdtDesc.text.toString()
         return !TextUtils.isEmpty(title) && !TextUtils.isEmpty(desc) && title.trim().length>0 && desc.trim().length>0
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

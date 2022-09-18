@@ -1,9 +1,11 @@
 package com.peeyoosh.notesapp.presentation.ui.adapter
 
 import android.annotation.SuppressLint
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.peeyoosh.notesapp.R
 import com.peeyoosh.notesapp.databinding.RecyclerNoteItemBinding
@@ -51,12 +53,27 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         @SuppressLint("SetTextI18n")
         fun bind(note: NoteDomainModel) {
 
-            Picasso.get().load(note.imageUrl)
-                .into(noteImageView)
+            if (!TextUtils.isEmpty(note.imageUrl) && note.imageUrl!!.trim().length > 0) {
+                Picasso.get().load(note.imageUrl)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(noteImageView)
+            } else {
+                noteImageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        noteImageView.context,
+                        R.drawable.ic_launcher_background
+                    )
+                )
+            }
 
             noteTitleTxt.setText(note.title)
             noteDescTxt.setText(note.description)
-            noteCreatedTxt.setText(noteCreatedTxt.context.getString(R.string.created)+convertLongToTime(note.creationTime))
+            noteCreatedTxt.setText(
+                noteCreatedTxt.context.getString(R.string.created) + convertLongToTime(
+                    note.creationTime
+                )
+            )
             if (note.isEdit) {
                 noteImageViewEdit.visibility = View.VISIBLE
             } else {
@@ -75,5 +92,6 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         val format = SimpleDateFormat(Constant.DATE_TIME_FORMAT)
         return format.format(date)
     }
+
     var onItemClick: ((NoteDomainModel) -> Unit)? = null
 }

@@ -33,7 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_5dp">
 
                 <TextView
                     android:id="@+id/txvTitle"
@@ -48,6 +49,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_5dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:text="Description"
                     android:textColor="@color/teal_200"
                     android:textSize="14sp" />

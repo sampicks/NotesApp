@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.peeyoosh.notesapp.data.model.Note
 import com.peeyoosh.notesapp.databinding.ActivityMainBinding
 import com.peeyoosh.notesapp.domain.model.NoteDomainModel
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var mRecyclerView: RecyclerView
     lateinit var mNoteAdapter: NoteAdapter
-
+    lateinit var mEmptyView : View
     @Inject
     lateinit var noteRepository: NoteRepository
 
@@ -58,10 +60,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUI() {
         setSupportActionBar(binding.toolbar)
+        getSupportActionBar()?.setTitle(getString(R.string.notes))
+
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
 
         mRecyclerView = binding!!.recyclerView
+        mEmptyView = binding!!.emptyView.emptyLayout
 
+        val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
+            this@MainActivity, resources.getIdentifier(
+                "layout_animation_from_right", "anim",
+                packageName
+            )
+        )
+        mRecyclerView.setLayoutAnimation(animation)
         mNoteAdapter = NoteAdapter()
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.setLayoutManager(LinearLayoutManager(this));
@@ -76,11 +88,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchList() {
         noteViewModel.fetchNotesList().observe(this, Observer {
-            it.forEach {
-                Log.e(TAG, "=====" + it.toString())
+            if(it!=null && it.size>0){
+                mEmptyView.visibility=View.GONE
+                mRecyclerView.visibility=View.VISIBLE
+                mNoteAdapter.submitList(it)
+                mNoteAdapter.notifyDataSetChanged()
+                mRecyclerView.scheduleLayoutAnimation()
+
             }
-            mNoteAdapter.submitList(it)
-            mNoteAdapter.notifyDataSetChanged()
+            else{
+                mEmptyView.visibility=View.VISIBLE
+                mRecyclerView.visibility=View.GONE
+            }
+
         })
     }
 
@@ -96,9 +116,6 @@ class MainActivity : AppCompatActivity() {
     val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-//                val intent = result.data
-                // Handle the Intent
-                //do stuff here
                 fetchList()
             }
         }
@@ -111,9 +128,9 @@ class MainActivity : AppCompatActivity() {
                 noteRepository.addNote(
                     Note(
                         id = null,
-                        "test",
-                        "description",
-                        "https://via.placeholder.com/100/000000/FFFFFF/?Text=Test",
+                        "The shortest article",
+                        "The shortest article description",
+                        "https://via.placeholder.com/100/03DAC5/000000/?Text=Test",
                         System.currentTimeMillis(),
                         false
                     )
@@ -121,9 +138,9 @@ class MainActivity : AppCompatActivity() {
                 noteRepository.addNote(
                     Note(
                         null,
-                        "test 2",
-                        "description",
-                        "https://via.placeholder.com/100/000000/FFFFFF/?Text=Test",
+                        "Value is too short",
+                        "Value is large now with description",
+                        "https://via.placeholder.com/100/6200EE/FFFFFF/?Text=Test",
                         System.currentTimeMillis(),
                         true
                     )
@@ -131,38 +148,8 @@ class MainActivity : AppCompatActivity() {
                 noteRepository.addNote(
                     Note(
                         null,
-                        "test 3",
-                        "description",
-                        "https://via.placeholder.com/120/FFBB86FC/FFFFFF/?text=IPaddress.net",
-                        System.currentTimeMillis(),
-                        false
-                    )
-                )
-                noteRepository.addNote(
-                    Note(
-                        id = null,
-                        "test",
-                        "description",
-                        "https://via.placeholder.com/100/000000/FFFFFF/?Text=Test",
-                        System.currentTimeMillis(),
-                        false
-                    )
-                )
-                noteRepository.addNote(
-                    Note(
-                        null,
-                        "test 2",
-                        "description",
-                        "https://via.placeholder.com/120/FFBB86FC/FFFFFF/?text=IPaddress.net",
-                        System.currentTimeMillis(),
-                        true
-                    )
-                )
-                noteRepository.addNote(
-                    Note(
-                        null,
-                        "test 3",
-                        "description",
+                        "Good Weather",
+                        "Rain rain go away",
                         "https://via.placeholder.com/120/FFBB86FC/FFFFFF/?text=IPaddress.net",
                         System.currentTimeMillis(),
                         false

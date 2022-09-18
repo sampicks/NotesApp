@@ -14,6 +14,7 @@
     <string name="delete">Delete</string>
     <string name="created">Created : </string>
     <string name="add_note">Add Note</string>
+    <string name="notes">Notes</string>
     <string name="edit_delete_note">Edit/Delete Note</string>
     <string name="validation_str">Title and Description are mandatory fields.</string>
     <string name="hint_title">Title *</string>
