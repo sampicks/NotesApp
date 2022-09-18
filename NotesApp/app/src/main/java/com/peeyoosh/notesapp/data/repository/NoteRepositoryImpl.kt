@@ -1,22 +1,23 @@
 package com.peeyoosh.notesapp.data.repository
 
-import com.peeyoosh.notesapp.data.db.NoteDatabase
+import com.peeyoosh.notesapp.data.db.NoteDao
 import com.peeyoosh.notesapp.data.model.Note
 import com.peeyoosh.notesapp.domain.repository.NoteRepository
+import javax.inject.Inject
 
-class NoteRepositoryImpl(private val noteDatabase: NoteDatabase) : NoteRepository {
+class NoteRepositoryImpl @Inject constructor(val noteDao: NoteDao) : NoteRepository {
 
-    override suspend fun getNotes() = noteDatabase.noteDao().getNotes()
+    override suspend fun getNotes() = noteDao.getNotes()
 
     override suspend fun addNote(note: Note) {
-        noteDatabase.noteDao().addNote(note)
+        noteDao.addNote(note)
     }
 
     override suspend fun updateNote(note: Note) {
-        noteDatabase.noteDao().updateNote(note)
+        noteDao.updateNote(note)
     }
 
     override suspend fun deleteNote(note: Note) {
-        noteDatabase.noteDao().deleteNote(note)
+        noteDao.deleteNote(note)
     }
 }

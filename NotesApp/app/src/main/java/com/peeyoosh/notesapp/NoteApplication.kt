@@ -1,21 +1,14 @@
 package com.peeyoosh.notesapp
 
 import android.app.Application
-import com.peeyoosh.notesapp.data.db.NoteDatabase
-import com.peeyoosh.notesapp.data.repository.NoteRepositoryImpl
 import com.peeyoosh.notesapp.domain.repository.NoteRepository
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
+@HiltAndroidApp
 class NoteApplication : Application() {
 
+    @Inject
     lateinit var noteRepository: NoteRepository
 
-    override fun onCreate() {
-        super.onCreate()
-        initialize()
-    }
-
-    private fun initialize() {
-        val database = NoteDatabase.getDatabase(applicationContext)
-        noteRepository = NoteRepositoryImpl(database)
-    }
 }

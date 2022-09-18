@@ -3,17 +3,24 @@ package com.peeyoosh.notesapp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.peeyoosh.notesapp.data.model.Note
 import com.peeyoosh.notesapp.databinding.ActivityMainBinding
+import com.peeyoosh.notesapp.domain.repository.NoteRepository
+import com.peeyoosh.notesapp.presentation.viewmodel.NoteViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 const val TAG = "MainActivity"
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    lateinit var noteViewModel: NoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,17 +30,17 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        val repository = (application as NoteApplication).noteRepository
+        noteViewModel=ViewModelProvider(this).get(NoteViewModel::class.java)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            repository.addNote(Note(1,"test","description","test url",System.currentTimeMillis(),false))
-            repository.addNote(Note(2,"test 2","description","test url",System.currentTimeMillis(),false))
-            repository.addNote(Note(3,"test 3","description","test url",System.currentTimeMillis(),false))
-
-            repository.getNotes().forEach {
-                Log.d(TAG,it.toString())
-            }
-        }
+//        GlobalScope.launch(Dispatchers.IO) {
+//            noteRepository.addNote(Note(id=null,"test","description","test url",System.currentTimeMillis(),false))
+//            noteRepository.addNote(Note(null,"test 2","description","test url",System.currentTimeMillis(),false))
+//            noteRepository.addNote(Note(null,"test 3","description","test url",System.currentTimeMillis(),false))
+//
+//            noteRepository.getNotes().forEach {
+//                Log.d(TAG,it.toString())
+//            }
+//        }
 
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
