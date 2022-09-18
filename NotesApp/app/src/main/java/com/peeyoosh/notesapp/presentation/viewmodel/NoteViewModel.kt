@@ -1,8 +1,11 @@
 package com.peeyoosh.notesapp.presentation.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peeyoosh.notesapp.domain.model.NoteDomainModel
 import com.peeyoosh.notesapp.domain.usecase.NoteUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,11 +27,30 @@ class NoteViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var noteUsecase: NoteUsecase
 
-    init {
+    private val noteListLiveData = MutableLiveData<List<NoteDomainModel>>()
+
+    fun fetchNotesList(): LiveData<List<NoteDomainModel>> {
         viewModelScope.launch(Dispatchers.IO + viewModelJob) {
-            noteUsecase.getNotesData().forEach {
-                Log.d(TAG, it.toString())
-            }
+            noteListLiveData.postValue(noteUsecase.getNotesData())
+        }
+        return noteListLiveData
+    }
+
+    fun saveNote(note: NoteDomainModel) {
+        viewModelScope.launch(Dispatchers.IO + viewModelJob) {
+            noteUsecase.addNote(note)
+        }
+    }
+
+    fun updateNote(note: NoteDomainModel) {
+        viewModelScope.launch(Dispatchers.IO + viewModelJob) {
+            noteUsecase.updateNote(note)
+        }
+    }
+
+    fun deleteNote(note: NoteDomainModel) {
+        viewModelScope.launch(Dispatchers.IO + viewModelJob) {
+            noteUsecase.deleteNote(note)
         }
     }
 

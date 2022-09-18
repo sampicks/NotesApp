@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 data class Note(
     @PrimaryKey(autoGenerate = true)
     val id : Int?=null,
-    val title : String,
-    val description : String,
-    val imageUrl : String?,
-    val creationTime : Long,
-    val isEdit : Boolean
+    var title : String,
+    var description : String,
+    var imageUrl : String?,
+    var creationTime : Long,
+    var isEdit : Boolean
 )

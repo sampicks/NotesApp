@@ -1,10 +1,14 @@
 package com.peeyoosh.notesapp.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class NoteDomainModel(
     val id: Int?,
-    val title: String,
-    val description: String,
-    val imageUrl: String?,
-    val creationTime: Long,
-    val isEdit: Boolean
-)
+    var title: String,
+    var description: String,
+    var imageUrl: String?,
+    var creationTime: Long,
+    var isEdit: Boolean
+) : Parcelable
