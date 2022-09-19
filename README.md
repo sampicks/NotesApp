@@ -14,4 +14,6 @@ Notes Application architecture is based on Clean Architecture
 - Hilt
 - Picasso
 - Kotlin Coroutines
+- View Binding
+- Data Binding
 

@@ -53,19 +53,8 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         @SuppressLint("SetTextI18n")
         fun bind(note: NoteDomainModel) {
 
-            if (!TextUtils.isEmpty(note.imageUrl) && note.imageUrl!!.trim().length > 0) {
-                Picasso.get().load(note.imageUrl)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_background)
-                    .into(noteImageView)
-            } else {
-                noteImageView.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        noteImageView.context,
-                        R.drawable.ic_launcher_background
-                    )
-                )
-            }
+            // Check BindingAdapter class for extension method
+            noteImageView.imageFromUrl(note.imageUrl)
 
             noteTitleTxt.setText(note.title)
             noteDescTxt.setText(note.description)
