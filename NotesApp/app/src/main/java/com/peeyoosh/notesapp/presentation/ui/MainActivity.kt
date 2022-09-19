@@ -24,9 +24,7 @@ import com.peeyoosh.notesapp.presentation.ui.adapter.NoteAdapter
 import com.peeyoosh.notesapp.presentation.util.Constant
 import com.peeyoosh.notesapp.presentation.viewmodel.NoteViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
@@ -122,45 +120,58 @@ class MainActivity : AppCompatActivity() {
 
     private fun feedDataOnlyFirstTime() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
         if (!prefs.getBoolean("firstTime", false)) {
             // run your one time code here
-            GlobalScope.launch(Dispatchers.IO) {
-                noteRepository.addNote(
-                    Note(
-                        id = null,
-                        "The shortest article",
-                        "The shortest article description",
-                        "https://via.placeholder.com/100/03DAC5/000000/?Text=Test",
-                        System.currentTimeMillis(),
-                        false
-                    )
-                )
-                noteRepository.addNote(
-                    Note(
-                        null,
-                        "Value is too short",
-                        "Value is large now with description",
-                        "https://via.placeholder.com/100/6200EE/FFFFFF/?Text=Test",
-                        System.currentTimeMillis(),
-                        true
-                    )
-                )
-                noteRepository.addNote(
-                    Note(
-                        null,
-                        "Good Weather",
-                        "Rain rain go away",
-                        "https://via.placeholder.com/120/FFBB86FC/FFFFFF/?text=IPaddress.net",
-                        System.currentTimeMillis(),
-                        false
-                    )
-                )
-
-            }
-
             val editor = prefs.edit()
             editor.putBoolean("firstTime", true)
             editor.apply()
+
+            /**
+             * The name of runBlocking means that the thread that runs it (in this case — the main thread)
+             * gets blocked for the duration of the call, until all the coroutines inside runBlocking { ... }
+             * complete their execution.
+             */
+            runBlocking {
+
+                // replaced launch by async because it is required to show all inserted data when load.
+                // Launch was showing only 1 record sometimes. Hence along with runBlocking, async
+                // blocks the main thread and notify by returning value when done.
+                val recordInserted = GlobalScope.async(Dispatchers.IO) {
+                    noteRepository.addNote(
+                        Note(
+                            id = null,
+                            "The shortest article",
+                            "The shortest article description",
+                            "https://picsum.photos/id/0/5616/3744",
+                            System.currentTimeMillis(),
+                            false
+                        )
+                    )
+                    noteRepository.addNote(
+                        Note(
+                            null,
+                            "Value is too short",
+                            "Value is large now with description",
+                            "https://picsum.photos/id/10/2500/1667",
+                            System.currentTimeMillis(),
+                            true
+                        )
+                    )
+                    noteRepository.addNote(
+                        Note(
+                            null,
+                            "Good Weather",
+                            "Rain rain go away",
+                            "https://picsum.photos/id/100/2500/1656",
+                            System.currentTimeMillis(),
+                            false
+                        )
+                    )
+
+                }
+                return@runBlocking recordInserted.await()
+            }
         }
     }
 }
