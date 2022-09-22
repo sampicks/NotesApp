@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import com.peeyoosh.notesapp.BR
 import com.peeyoosh.notesapp.R
 import com.peeyoosh.notesapp.databinding.RecyclerNoteItemBinding
 import com.peeyoosh.notesapp.domain.model.NoteDomainModel
@@ -21,43 +23,32 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
     private var items: List<NoteDomainModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val binding =
-            RecyclerNoteItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = RecyclerNoteItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NoteViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+        holder.viewDataBinding.setVariable(BR.noteDomainModel,items.get(position))
         holder.bind(items.get(position))
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    inner class NoteViewHolder constructor(val viewDataBinding: ViewDataBinding) : RecyclerView.ViewHolder(viewDataBinding.root)
+    {
+//        val noteImageView = binding.imgNote
+//        val noteTitleTxt = binding.txvTitle
+//        val noteDescTxt = binding.txvDescription
+//        val noteCreatedTxt = binding.txvDateCreated
+//        val noteImageViewEdit = binding.imgEdit
 
-    fun submitList(blogList: List<NoteDomainModel>) {
-        items = blogList
-    }
-
-    inner class NoteViewHolder
-    constructor(
-        binding: RecyclerNoteItemBinding
-    ) : RecyclerView.ViewHolder(binding.rootView) {
-
-        val noteImageView = binding.imgNote
-        val noteTitleTxt = binding.txvTitle
-        val noteDescTxt = binding.txvDescription
-        val noteCreatedTxt = binding.txvDateCreated
-        val noteImageViewEdit = binding.imgEdit
-
-
-        @SuppressLint("SetTextI18n")
         fun bind(note: NoteDomainModel) {
+        // Comment following code because I have used Data Binding in xml hence no need to code.
 
-            // Check BindingAdapter class for extension method
-            noteImageView.imageFromUrl(note.imageUrl)
+            /*   // Check BindingAdapter class for extension method
+               noteImageView.imageFromUrl(note.imageUrl)
 
-            noteTitleTxt.setText(note.title)
-            noteDescTxt.setText(note.description)
+               noteTitleTxt.setText(note.title)
+               noteDescTxt.setText(note.description)
+
             noteCreatedTxt.setText(
                 noteCreatedTxt.context.getString(R.string.created) + convertLongToTime(
                     note.creationTime
@@ -68,7 +59,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
             } else {
                 noteImageViewEdit.visibility = View.INVISIBLE
             }
-
+*/
             itemView.setOnClickListener {
                 onItemClick?.invoke(note)
             }
@@ -76,10 +67,12 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     }
 
-    fun convertLongToTime(time: Long): String {
-        val date = Date(time)
-        val format = SimpleDateFormat(Constant.DATE_TIME_FORMAT)
-        return format.format(date)
+    override fun getItemCount(): Int {
+        return items.size
+    }
+
+    fun submitList(blogList: List<NoteDomainModel>) {
+        items = blogList
     }
 
     var onItemClick: ((NoteDomainModel) -> Unit)? = null
