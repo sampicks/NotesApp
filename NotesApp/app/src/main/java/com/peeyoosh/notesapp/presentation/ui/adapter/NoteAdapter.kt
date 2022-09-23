@@ -1,22 +1,12 @@
 package com.peeyoosh.notesapp.presentation.ui.adapter
 
-import android.annotation.SuppressLint
-import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.peeyoosh.notesapp.BR
-import com.peeyoosh.notesapp.R
 import com.peeyoosh.notesapp.databinding.RecyclerNoteItemBinding
 import com.peeyoosh.notesapp.domain.model.NoteDomainModel
-import com.peeyoosh.notesapp.presentation.util.Constant
-import com.squareup.picasso.Picasso
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
 class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 

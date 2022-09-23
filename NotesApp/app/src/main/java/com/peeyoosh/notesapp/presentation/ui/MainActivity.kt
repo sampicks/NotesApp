@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
@@ -15,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.peeyoosh.navigation_paging_retrofit.NavigationHomeActivity
 import com.peeyoosh.notesapp.data.model.Note
 import com.peeyoosh.notesapp.databinding.ActivityMainBinding
 import com.peeyoosh.notesapp.domain.model.NoteDomainModel
@@ -173,5 +176,23 @@ class MainActivity : AppCompatActivity() {
                 return@runBlocking recordInserted.await()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_navigation ->{
+                startActivity( Intent(this, NavigationHomeActivity::class.java))
+                return true
+            }
+            else ->{
+                return super.onOptionsItemSelected(item)
+            }
+        }
+
     }
 }
