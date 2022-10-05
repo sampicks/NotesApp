@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "NotesApplication"
 include ':app'
+include ':navigation_paging_retrofit'
+include ':kotlin_flows'
